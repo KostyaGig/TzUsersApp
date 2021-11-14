@@ -55,5 +55,6 @@ class UsersFragment : BaseFragment(R.layout.users_fragment) {
         }
 
         usersViewModel.users()
+
     }
 }
