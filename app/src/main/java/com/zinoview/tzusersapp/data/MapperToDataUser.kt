@@ -2,9 +2,9 @@ package com.zinoview.tzusersapp.data
 
 import com.zinoview.tzusersapp.core.Abstract
 
-interface MapperCloudUserToData : Abstract.UserMapper<DataUser> {
+interface MapperToDataUser : Abstract.UserMapper<DataUser> {
 
-    class Base : MapperCloudUserToData {
+    class Base : MapperToDataUser {
         override fun map(
             id: Int,
             email: String,

@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.zinoview.tzusersapp.domain.UsersInteractor
 import com.zinoview.tzusersapp.presentation.state.CommunicationUiStateUser
-import com.zinoview.tzusersapp.presentation.state.MapperUiUserToState
+import com.zinoview.tzusersapp.presentation.state.MapperUiUserToCacheState
+import com.zinoview.tzusersapp.presentation.state.MapperUiUserToCommonState
 import com.zinoview.tzusersapp.presentation.state.MapperUiUsersToState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,8 @@ interface UsersViewModelFactory : ViewModelProvider.Factory {
                     MapperDomainUserToUi.Base()
                 ),
                 MapperUiUsersToState.Base(
-                    MapperUiUserToState.Base()
+                    MapperUiUserToCommonState.Base(),
+                    MapperUiUserToCacheState.Base()
                 ),
                 CommunicationUiStateUser.Base(),
                 defaultCoroutineDispatcher

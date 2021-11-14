@@ -1,11 +1,17 @@
 package com.zinoview.tzusersapp.data
 
 import com.zinoview.tzusersapp.core.BaseUser
+import com.zinoview.tzusersapp.data.cache.CacheDataSource
 import com.zinoview.tzusersapp.data.cloud.CloudDataSource
 import com.zinoview.tzusersapp.data.cloud.CloudUser
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import com.zinoview.tzusersapp.presentation.core.log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.lang.Exception
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 interface UsersRepository {
 
@@ -13,14 +19,21 @@ interface UsersRepository {
 
     class Base(
         private val cloudDataSource: CloudDataSource<CloudUser>,
-        private val mapperCloudUserToData: MapperCloudUserToData,
+        private val cacheDataSource: CacheDataSource,
+        private val mapperToDataUser: MapperToDataUser,
         private val exceptionMapper: ExceptionMapper<String>
     ) : UsersRepository {
 
         override suspend fun users(): Flow<DataUsers> {
+            if (cacheDataSource.isNotEmpty()) {
+                log("Cache is not empty")
+                return usersFromCache()
+            }
             return try {
+                log("Cache is empty")
                 val cloudUsers = cloudDataSource.users()
-                val dataUsers = cloudUsers.map { cloudUser -> cloudUser.map(mapperCloudUserToData)  }
+                cacheDataSource.save(cloudUsers)
+                val dataUsers = cloudUsers.map { cloudUser -> cloudUser.map(mapperToDataUser)  }
                 flow {
                     emit(
                         DataUsers.Success(dataUsers)
@@ -35,8 +48,22 @@ interface UsersRepository {
                 }
             }
         }
+
+        private suspend fun usersFromCache() : Flow<DataUsers> = suspendCoroutine { continuation ->
+            CoroutineScope(Dispatchers.IO).launch {
+                cacheDataSource.users().collect { cacheUsers ->
+                    val dataUsers = cacheUsers.map { cacheUser -> cacheUser.map(mapperToDataUser) }
+                    continuation.resume(
+                        flow {
+                            emit(DataUsers.Cache(dataUsers))
+                        }
+                    )
+                }
+            }
+        }
     }
 
+    //todo test for cacheDataSource
     class Test(
         private val cloudDataSource: CloudDataSource<BaseUser>
     ) : UsersRepository {

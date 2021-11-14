@@ -2,9 +2,9 @@ package com.zinoview.tzusersapp.presentation.state
 
 import com.zinoview.tzusersapp.core.Abstract
 
-interface MapperUiUserToState : Abstract.UserMapper<UiStateUser> {
+interface MapperUiUserToCommonState : Abstract.UserMapper<UiStateUser> {
 
-    class Base : MapperUiUserToState {
+    class Base : MapperUiUserToCommonState {
 
         override fun map(
             id: Int,
@@ -13,7 +13,7 @@ interface MapperUiUserToState : Abstract.UserMapper<UiStateUser> {
             lastName: String,
             avatar: String
         ): UiStateUser
-            = UiStateUser.Base(
+            = UiStateUser.Common(
                 id, email, firstName, lastName, avatar
             )
 

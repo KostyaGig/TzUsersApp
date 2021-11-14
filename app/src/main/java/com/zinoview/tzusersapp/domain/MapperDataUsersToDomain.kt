@@ -14,6 +14,11 @@ interface MapperDataUsersToDomain : Abstract.UsersMapper<DomainUsers> {
                 dataUser.map(mapperDataUserToDomain)
             })
 
+        override fun mapCache(users: List<BaseUser>): DomainUsers
+            = DomainUsers.Cache(users.map { dataUser ->
+                dataUser.map(mapperDataUserToDomain)
+         })
+
         override fun map(message: String): DomainUsers
             = DomainUsers.Failure(message)
 

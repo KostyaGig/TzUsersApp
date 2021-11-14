@@ -1,10 +1,9 @@
 package com.zinoview.tzusersapp.data.cloud
 
 import com.zinoview.tzusersapp.core.BaseUser
+import com.zinoview.tzusersapp.data.core.DataSource
 
-interface CloudDataSource<T> {
-
-    suspend fun users() : List<T>
+interface CloudDataSource<T> : DataSource<List<T>> {
 
     class Base(
         private val cloudUserService: CloudUserService

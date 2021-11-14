@@ -11,6 +11,7 @@ import com.zinoview.tzusersapp.presentation.UsersViewModel
 import com.zinoview.tzusersapp.presentation.UsersViewModelFactory
 import com.zinoview.tzusersapp.presentation.adapter.UsersAdapter
 import com.zinoview.tzusersapp.presentation.core.BaseFragment
+import com.zinoview.tzusersapp.presentation.core.log
 import javax.inject.Inject
 
 class UsersFragment : BaseFragment(R.layout.users_fragment) {
@@ -49,6 +50,7 @@ class UsersFragment : BaseFragment(R.layout.users_fragment) {
 
         usersViewModel.observe(this) { uiStateUser ->
             uiStateUser.first().handleTitleToolbar(checkNotNull(toolbar))
+            log("first uiStateUser ${uiStateUser.first().javaClass}")
             adapter.show(uiStateUser)
         }
 

@@ -5,6 +5,7 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import com.squareup.picasso.Picasso
 import com.zinoview.tzusersapp.presentation.adapter.SameUiStateUser
+import com.zinoview.tzusersapp.presentation.core.log
 
 sealed class UiStateUser : SameUiStateUser {
 
@@ -35,7 +36,7 @@ sealed class UiStateUser : SameUiStateUser {
         private const val TOOLBAR_TITLE = "Progress..."
     }
 
-    class Base(
+    abstract class Base(
         private val id: Int,
         private val email: String,
         private val firstName: String,
@@ -43,32 +44,59 @@ sealed class UiStateUser : SameUiStateUser {
         private val avatar: String
     ) : UiStateUser() {
 
+        override fun sameId(item: UiStateUser): Boolean
+                = item.sameId(id)
+
+        override fun sameId(id: Int): Boolean
+                = this.id == id
+
+        override fun same(item: UiStateUser): Boolean
+                = item.same(email, firstName)
+
+        override fun same(email: String, firstName: String): Boolean
+                = this.email == email && this.firstName == firstName
+
         override fun bind(avatarImage: ImageView,firstNameText: TextView,lastNameText: TextView,emailText: TextView) {
+            log("base bind")
             Picasso.get().load(avatar).into(avatarImage)
             firstNameText.text = firstName
             lastNameText.text = lastName
             emailText.text = email
         }
+    }
+
+    class Common(
+        id: Int,
+        email: String,
+        firstName: String,
+        lastName: String,
+        avatar: String
+    ) : Base(id, email, firstName, lastName, avatar) {
 
         override fun handleTitleToolbar(actionBar: ActionBar) {
             actionBar.title = TOOLBAR_TITLE
         }
 
         private companion object {
-            private const val TOOLBAR_TITLE = "Users"
+            private const val TOOLBAR_TITLE = "Users(Remote)"
+        }
+    }
+
+    class Cache(
+        id: Int,
+        email: String,
+        firstName: String,
+        lastName: String,
+        avatar: String
+    ) : Base(id, email, firstName, lastName, avatar) {
+
+        override fun handleTitleToolbar(actionBar: ActionBar) {
+            actionBar.title = TOOLBAR_TITLE
         }
 
-        override fun sameId(item: UiStateUser): Boolean
-            = item.sameId(id)
-
-        override fun sameId(id: Int): Boolean
-            = this.id == id
-
-        override fun same(item: UiStateUser): Boolean
-            = item.same(email, firstName)
-
-        override fun same(email: String, firstName: String): Boolean
-            = this.email == email && this.firstName == firstName
+        private companion object {
+            private const val TOOLBAR_TITLE = "Users(Cache)"
+        }
     }
 
     class Failure(

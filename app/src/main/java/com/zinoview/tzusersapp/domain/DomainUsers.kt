@@ -2,6 +2,7 @@ package com.zinoview.tzusersapp.domain
 
 import com.zinoview.tzusersapp.core.Abstract
 import com.zinoview.tzusersapp.core.BaseUser
+import com.zinoview.tzusersapp.data.DataUsers
 
 sealed class DomainUsers : Abstract.Users {
 
@@ -11,6 +12,14 @@ sealed class DomainUsers : Abstract.Users {
 
         override fun <T> map(mapper: Abstract.UsersMapper<T>): T
             = mapper.map(users)
+    }
+
+    class Cache(
+        private val users: List<BaseUser>
+    ) : DomainUsers() {
+
+        override fun <T> map(mapper: Abstract.UsersMapper<T>): T
+                = mapper.mapCache(users)
     }
 
     class Failure(
