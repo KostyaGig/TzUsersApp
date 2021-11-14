@@ -13,10 +13,10 @@ class UsersMapperTest {
     fun test_success_map_data_users_to_domain_users() {
         val dataUsers = TestDataUsers.Success(
             listOf(
-                User.Base(
+                BaseUser.Test(
                 1,"testuser@mail.ru","Kostya","Brob","avatar.jpg"
                 ),
-                User.Base(
+                BaseUser.Test(
                     2,"test2user@mail.ru","Minor","Fromik","avatar2.jpg"
                 )
             )
@@ -27,10 +27,10 @@ class UsersMapperTest {
 
         val expected = TestDomainUsers.Success(
             listOf(
-                User.Base(
+                BaseUser.Test(
                     1,"testuser@mail.ru","Kostya","Brob","avatar.jpg"
                 ),
-                User.Base(
+                BaseUser.Test(
                     2,"test2user@mail.ru","Minor","Fromik","avatar2.jpg"
                 )
             )
@@ -55,7 +55,7 @@ class UsersMapperTest {
 
     private sealed class TestDataUsers : Abstract.Users {
         data class Success(
-            private val users: List<User>
+            private val users: List<BaseUser>
         ) : TestDataUsers() {
 
             override fun <T> map(mapper: Abstract.UsersMapper<T>): T
@@ -74,7 +74,7 @@ class UsersMapperTest {
     private sealed class TestDomainUsers : Abstract.Users {
 
         data class Success(
-            private val users: List<User>
+            private val users: List<BaseUser>
         ) : TestDomainUsers() {
 
             override fun <T> map(mapper: Abstract.UsersMapper<T>): T
@@ -92,7 +92,7 @@ class UsersMapperTest {
 
     private inner class MapperTestDataUsersToDomainUsers : Abstract.UsersMapper<TestDomainUsers> {
 
-        override fun map(users: List<User>): TestDomainUsers
+        override fun map(users: List<BaseUser>): TestDomainUsers
             = TestDomainUsers.Success(users)
 
         override fun map(message: String): TestDomainUsers

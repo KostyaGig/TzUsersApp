@@ -8,7 +8,7 @@ import java.net.UnknownHostException
 
 /**
  * Test for [com.zinoview.tzusersapp.data.ExceptionMapper.Test]
- * */
+ */
 
 class ExceptionMapperTest {
 

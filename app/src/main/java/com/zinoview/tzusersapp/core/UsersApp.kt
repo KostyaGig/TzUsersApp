@@ -14,7 +14,7 @@ class UsersApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        if (BuildConfig.DEBUG) {
+        if (com.zinoview.tzusersapp.BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
 

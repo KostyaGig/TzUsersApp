@@ -1,16 +1,16 @@
 package com.zinoview.tzusersapp.core
 
-interface User : Abstract.User {
+interface BaseUser : Abstract.User {
 
-    data class Base(
+    data class Test(
         private val id: Int,
         private val email: String,
         private val firstName: String,
         private val lastName: String,
         private val avatar: String
-    ) : User {
+    ) : BaseUser {
 
         override fun <T> map(mapper: Abstract.UserMapper<T>): T
-            = mapper.map(id, email, firstName, lastName, avatar)
+                = mapper.map(id, email, firstName, lastName, avatar)
     }
 }

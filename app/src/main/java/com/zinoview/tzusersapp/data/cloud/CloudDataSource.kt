@@ -1,21 +1,34 @@
 package com.zinoview.tzusersapp.data.cloud
 
-import android.util.Log
-import com.zinoview.tzusersapp.presentation.core.log
+import com.zinoview.tzusersapp.core.BaseUser
 
-interface CloudDataSource {
+interface CloudDataSource<T> {
 
-    suspend fun users() : List<CloudUser>
+    suspend fun users() : List<T>
 
     class Base(
         private val cloudUserService: CloudUserService
-    ) : CloudDataSource {
+    ) : CloudDataSource<CloudUser> {
 
         override suspend fun users(): List<CloudUser> {
-            Log.d("zinoviewk","uses()")
-            val cloudUsers = cloudUserService.data().users()
-            Log.d("zinoviewk","User from network size ${cloudUsers.size}, email ${(cloudUsers[0] as CloudUser.Base).email}")
-            return cloudUsers
+            return cloudUserService.data().users()
+        }
+    }
+
+    class Test : CloudDataSource<BaseUser> {
+
+        override suspend fun users(): List<BaseUser> {
+            return listOf(
+                BaseUser.Test(
+                    1,"testuser@mail.ru","Kostya","Brob","avatar.jpg"
+                ),
+                BaseUser.Test(
+                    2,"test2user@mail.ru","Minor","Fromik","avatar2.jpg"
+                ),
+                BaseUser.Test(
+                    3,"test3user@mail.ru","Feodora","Mint","avatar3.jpg"
+                )
+            )
         }
     }
 }

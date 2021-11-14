@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_10dp">10dp</dimen>
+    <dimen name="avatar_image_size">100dp</dimen>
+    <dimen name="name_size">17sp</dimen>
+    <dimen name="email_size">14sp</dimen>
+</resources>

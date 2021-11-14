@@ -18,7 +18,7 @@ interface Abstract {
 
     interface UsersMapper<T> : Mapper {
 
-        fun map(users: List<com.zinoview.tzusersapp.core.User>) : T
+        fun map(users: List<com.zinoview.tzusersapp.core.BaseUser>) : T
 
         fun map(message: String) : T
     }

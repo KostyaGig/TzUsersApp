@@ -5,7 +5,7 @@ import com.zinoview.tzusersapp.core.ResourceProvider
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [NetworkModule::class])
+@Module(includes = [DataModule::class,DomainModule::class,UiModule::class])
 class AppModule(
     private val context: Context
 ) {

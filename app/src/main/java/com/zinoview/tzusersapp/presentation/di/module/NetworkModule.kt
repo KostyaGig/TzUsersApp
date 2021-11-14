@@ -1,5 +1,7 @@
 package com.zinoview.tzusersapp.presentation.di.module
 
+import com.zinoview.tzusersapp.data.cloud.CloudDataSource
+import com.zinoview.tzusersapp.data.cloud.CloudUser
 import com.zinoview.tzusersapp.data.cloud.CloudUserService
 import dagger.Module
 import dagger.Provides
@@ -42,4 +44,8 @@ class NetworkModule {
         return retrofit.create(CloudUserService::class.java)
     }
 
+    @Provides
+    fun provideBaseCloudDataSource(service: CloudUserService) : CloudDataSource<CloudUser> {
+        return CloudDataSource.Base(service)
+    }
 }
