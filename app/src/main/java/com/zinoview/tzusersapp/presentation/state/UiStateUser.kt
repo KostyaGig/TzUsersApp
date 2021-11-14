@@ -3,16 +3,28 @@ package com.zinoview.tzusersapp.presentation.state
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.widget.Toolbar
 import com.squareup.picasso.Picasso
+import com.zinoview.tzusersapp.presentation.adapter.SameUiStateUser
 
-sealed class UiStateUser {
+sealed class UiStateUser : SameUiStateUser {
 
     open fun bind(avatarImage: ImageView,firstNameText: TextView,lastNameText: TextView,emailText: TextView) = Unit
 
     open fun bind(errorText: TextView) = Unit
 
     abstract fun handleTitleToolbar(actionBar: ActionBar)
+
+    override fun same(item: UiStateUser): Boolean
+        = false
+
+    override fun same(email: String, firstName: String): Boolean
+        = false
+
+    override fun sameId(item: UiStateUser): Boolean
+        = false
+
+    override fun sameId(id: Int): Boolean
+        = false
 
     object Progress : UiStateUser() {
 
@@ -45,6 +57,18 @@ sealed class UiStateUser {
         private companion object {
             private const val TOOLBAR_TITLE = "Users"
         }
+
+        override fun sameId(item: UiStateUser): Boolean
+            = item.sameId(id)
+
+        override fun sameId(id: Int): Boolean
+            = this.id == id
+
+        override fun same(item: UiStateUser): Boolean
+            = item.same(email, firstName)
+
+        override fun same(email: String, firstName: String): Boolean
+            = this.email == email && this.firstName == firstName
     }
 
     class Failure(

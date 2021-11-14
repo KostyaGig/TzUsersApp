@@ -3,24 +3,27 @@ package com.zinoview.tzusersapp.presentation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.zinoview.tzusersapp.databinding.FailureItemBinding
 import com.zinoview.tzusersapp.databinding.ProgressItemBinding
 import com.zinoview.tzusersapp.databinding.UserItemBinding
+import com.zinoview.tzusersapp.presentation.Show
 import com.zinoview.tzusersapp.presentation.state.UiStateUser
 
-interface UsersAdapter {
+interface UsersAdapter : Show<List<UiStateUser>> {
 
-    fun update(items: List<UiStateUser>)
 
     class Base : UsersAdapter, RecyclerView.Adapter<Base.ViewHolder>() {
 
         private val users = ArrayList<UiStateUser>()
 
-        override fun update(items: List<UiStateUser>) {
+        override fun show(newList: List<UiStateUser>) {
+            val diffUtilCallback = UsersDiffUtilCallback(users,newList)
+            val result = DiffUtil.calculateDiff(diffUtilCallback)
             users.clear()
-            users.addAll(items)
-            notifyDataSetChanged()
+            users.addAll(newList)
+            result.dispatchUpdatesTo(this)
         }
 
         private companion object {

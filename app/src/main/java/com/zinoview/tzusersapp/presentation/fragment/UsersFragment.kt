@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.zinoview.tzusersapp.R
-import com.zinoview.tzusersapp.core.UsersApp
 import com.zinoview.tzusersapp.databinding.UsersFragmentBinding
 import com.zinoview.tzusersapp.presentation.UsersViewModel
 import com.zinoview.tzusersapp.presentation.UsersViewModelFactory
@@ -50,7 +49,7 @@ class UsersFragment : BaseFragment(R.layout.users_fragment) {
 
         usersViewModel.observe(this) { uiStateUser ->
             uiStateUser.first().handleTitleToolbar(checkNotNull(toolbar))
-            adapter.update(uiStateUser)
+            adapter.show(uiStateUser)
         }
 
         usersViewModel.users()
