@@ -41,6 +41,37 @@ class UsersMapperTest {
     }
 
     @Test
+    fun test_success_map_cache_users_to_domain_users() {
+        val dataUsers = TestDataUsers.Cache(
+            listOf(
+                BaseUser.Test(
+                    1,"testuser@mail.ru","Kostya","Brob","avatar.jpg"
+                ),
+                BaseUser.Test(
+                    2,"test2user@mail.ru","Minor","Fromik","avatar2.jpg"
+                )
+            )
+        )
+
+        val mapperTestDataUsersToDomainUsers = MapperTestDataUsersToDomainUsers()
+        val domainUsers = dataUsers.map(mapperTestDataUsersToDomainUsers)
+
+        val expected = TestDomainUsers.Cache(
+            listOf(
+                BaseUser.Test(
+                    1,"testuser@mail.ru","Kostya","Brob","avatar.jpg"
+                ),
+                BaseUser.Test(
+                    2,"test2user@mail.ru","Minor","Fromik","avatar2.jpg"
+                )
+            )
+        )
+
+        assertEquals(expected,domainUsers)
+        assertTrue(domainUsers is TestDomainUsers.Cache)
+    }
+
+    @Test
     fun test_failure_map_data_users_to_domain_users() {
         val dataUsers = TestDataUsers.Failure("No connection")
 
@@ -62,6 +93,14 @@ class UsersMapperTest {
                 = mapper.map(users)
         }
 
+        data class Cache(
+            private val users: List<BaseUser>
+        ) : TestDataUsers() {
+
+            override fun <T> map(mapper: Abstract.UsersMapper<T>): T
+                    = mapper.mapCache(users)
+        }
+
         data class Failure(
             private val message: String
         ) : TestDataUsers() {
@@ -81,6 +120,14 @@ class UsersMapperTest {
                     = mapper.map(users)
         }
 
+        data class Cache(
+            private val users: List<BaseUser>
+        ) : TestDomainUsers() {
+
+            override fun <T> map(mapper: Abstract.UsersMapper<T>): T
+                = mapper.mapCache(users)
+        }
+
         data class Failure(
             private val message: String
         ) : TestDomainUsers() {
@@ -97,5 +144,8 @@ class UsersMapperTest {
 
         override fun map(message: String): TestDomainUsers
             = TestDomainUsers.Failure(message)
+
+        override fun mapCache(users: List<BaseUser>): TestDomainUsers
+            = TestDomainUsers.Cache(users)
     }
 }

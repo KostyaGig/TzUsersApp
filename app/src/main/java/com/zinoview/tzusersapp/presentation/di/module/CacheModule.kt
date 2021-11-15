@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.zinoview.tzusersapp.data.cache.*
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.flow.Flow
 
 @Module
 class CacheModule {
@@ -26,7 +27,7 @@ class CacheModule {
     }
 
     @Provides
-    fun provideCacheDataSource(usersDao: UsersDao) : CacheDataSource {
+    fun provideCacheDataSource(usersDao: UsersDao) : CacheDataSource<Flow<List<CacheUser>>> {
         return CacheDataSource.Base(
             DataBase.Room.Base(
                 usersDao
