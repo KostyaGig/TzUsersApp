@@ -2,6 +2,7 @@ package com.zinoview.tzusersapp.data
 
 import com.zinoview.tzusersapp.core.BaseUser
 import com.zinoview.tzusersapp.data.cache.CacheDataSource
+import com.zinoview.tzusersapp.data.cache.CacheUser
 import com.zinoview.tzusersapp.data.cloud.CloudDataSource
 import com.zinoview.tzusersapp.data.cloud.CloudUser
 import com.zinoview.tzusersapp.presentation.core.log
@@ -19,7 +20,7 @@ interface UsersRepository {
 
     class Base(
         private val cloudDataSource: CloudDataSource<CloudUser>,
-        private val cacheDataSource: CacheDataSource,
+        private val cacheDataSource: CacheDataSource<Flow<List<CacheUser>>>,
         private val mapperToDataUser: MapperToDataUser,
         private val exceptionMapper: ExceptionMapper<String>
     ) : UsersRepository {
@@ -63,16 +64,22 @@ interface UsersRepository {
         }
     }
 
-    //todo test for cacheDataSource
     class Test(
+        private val cacheDataSource: CacheDataSource<List<BaseUser>>,
         private val cloudDataSource: CloudDataSource<BaseUser>
     ) : UsersRepository {
 
-        private var count = 1
+        private var count = 0
 
         override suspend fun users(): Flow<DataUsers> {
+            if (cacheDataSource.isNotEmpty()) {
+                return flow {
+                    emit(DataUsers.Cache(cacheDataSource.users()))
+                }
+            }
             val baseUsers = cloudDataSource.users()
             val result = if (count % 2 == 1) {
+                cacheDataSource.save(listOf())
                 flow {
                     emit(
                         DataUsers.Success(
