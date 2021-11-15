@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.zinoview.tzusersapp.R
 import com.zinoview.tzusersapp.core.ResourceProvider
 import com.zinoview.tzusersapp.databinding.UserEditFragmentBinding
@@ -73,15 +75,17 @@ class UserEditFragment : BaseFragment(R.layout.user_edit_fragment) {
                 }
             }
 
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    navigateToBack()
+                }
+            })
+
         }
     }
 
-    override fun navigateToBack() {
-        requireActivity()
-            .supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_container,UsersFragment())
-            .commit()
+    private fun navigateToBack() {
+        findNavController().navigate(R.id.action_userEditFragment_to_usersFragment)
     }
 
 

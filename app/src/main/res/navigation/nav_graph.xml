@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/usersFragment">
+
+    <fragment
+        android:id="@+id/usersFragment"
+        android:name="com.zinoview.tzusersapp.presentation.fragment.UsersFragment"
+        android:label="UsersFragment"
+        >
+        <action
+            android:id="@+id/action_usersFragment_to_userEditFragment"
+            app:destination="@id/userEditFragment"
+
+            />
+<!--        app:enterAnim="@anim/enter_to_right"-->
+<!--        app:exitAnim="@anim/enter_from_right"-->
+    </fragment>
+    <fragment
+        android:id="@+id/userEditFragment"
+        android:name="com.zinoview.tzusersapp.presentation.fragment.UserEditFragment"
+        android:label="UserEditFragment" >
+        <action
+            android:id="@+id/action_userEditFragment_to_usersFragment"
+            app:destination="@id/usersFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"
+            />
+<!--        app:exitAnim="@anim/enter_from_right"-->
+
+    </fragment>
+</navigation>

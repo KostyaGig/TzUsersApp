@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.zinoview.tzusersapp.R
 import com.zinoview.tzusersapp.databinding.UsersFragmentBinding
 import com.zinoview.tzusersapp.presentation.BundleUser
@@ -14,8 +15,6 @@ import com.zinoview.tzusersapp.presentation.UsersViewModelFactory
 import com.zinoview.tzusersapp.presentation.adapter.ModifyItemClickListener
 import com.zinoview.tzusersapp.presentation.adapter.UsersAdapter
 import com.zinoview.tzusersapp.presentation.core.BaseFragment
-import com.zinoview.tzusersapp.presentation.core.ExitActivity
-import com.zinoview.tzusersapp.presentation.core.log
 import javax.inject.Inject
 
 class UsersFragment : BaseFragment(R.layout.users_fragment) {
@@ -47,7 +46,6 @@ class UsersFragment : BaseFragment(R.layout.users_fragment) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         val adapter = UsersAdapter.Base(object : ModifyItemClickListener {
 
             override fun onDeleteItem(email: String) {
@@ -56,18 +54,12 @@ class UsersFragment : BaseFragment(R.layout.users_fragment) {
 
             override fun onEditItem(bundleUser: BundleUser) {
 
-                val fragment = UserEditFragment().apply {
-                    arguments = Bundle().apply {
-                        putSerializable(USER_KEY,bundleUser)
-                    }
+                val bundle = Bundle().apply {
+                    putSerializable(USER_KEY,bundleUser)
                 }
 
-                requireActivity()
-                    .supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fragment_container,fragment)
-                    .commit()
-
+                findNavController()
+                    .navigate(R.id.action_usersFragment_to_userEditFragment,bundle)
             }
 
         })
@@ -75,15 +67,10 @@ class UsersFragment : BaseFragment(R.layout.users_fragment) {
 
         usersViewModel.observe(this) { uiStateUser ->
             uiStateUser.first().handleTitleToolbar(checkNotNull(toolbar))
-            log("first uiStateUser ${uiStateUser.first().javaClass}")
             adapter.show(uiStateUser)
         }
 
         usersViewModel.users()
-
     }
 
-    override fun navigateToBack() {
-        (requireActivity() as ExitActivity).exit()
-    }
 }
