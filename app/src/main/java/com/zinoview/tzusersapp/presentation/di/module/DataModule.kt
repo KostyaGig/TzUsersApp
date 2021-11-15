@@ -8,6 +8,7 @@ import com.zinoview.tzusersapp.data.cache.CacheDataSource
 import com.zinoview.tzusersapp.data.cache.CacheUser
 import com.zinoview.tzusersapp.data.cloud.CloudDataSource
 import com.zinoview.tzusersapp.data.cloud.CloudUser
+import com.zinoview.tzusersapp.domain.MapperDataUserToDomain
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.flow.Flow

@@ -55,6 +55,31 @@
             android:textSize="@dimen/email_size"
             android:layout_margin="@dimen/margin_10dp"/>
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="end">
+
+
+            <ImageView
+                android:id="@+id/edit_user_image"
+                android:layout_width="@dimen/action_ic_size"
+                android:layout_height="@dimen/action_ic_size"
+                android:src="@drawable/ic_edit"
+                android:layout_margin="@dimen/margin_10dp"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/delete_user_image"
+                android:layout_width="@dimen/action_ic_size"
+                android:layout_height="@dimen/action_ic_size"
+                android:src="@drawable/ic_delete"
+                android:layout_margin="@dimen/margin_10dp"
+                android:visibility="gone"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
     </LinearLayout>
 
 

@@ -2,4 +2,8 @@
     <string name="app_name">TzUsersApp</string>
     <string name="no_connection_text">No connection</string>
     <string name="some_went_wrong_text">Some went wrong</string>
+    <string name="new_user_name_text">New user name</string>
+    <string name="new_user_last_name_text">Edit user last name</string>
+    <string name="update_text">Update</string>
+    <string name="fields_not_will_be_empty_text">Fields not will be empty</string>
 </resources>

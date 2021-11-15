@@ -2,9 +2,9 @@ package com.zinoview.tzusersapp.data.cache
 
 import com.zinoview.tzusersapp.core.Abstract
 
-interface MapperCloudUserToCache : Abstract.UserMapper<CacheUser> {
+interface MapperToCacheUser : Abstract.UserMapper<CacheUser> {
 
-    class Base : MapperCloudUserToCache {
+    class Base : MapperToCacheUser {
 
         override fun map(
             id: Int,

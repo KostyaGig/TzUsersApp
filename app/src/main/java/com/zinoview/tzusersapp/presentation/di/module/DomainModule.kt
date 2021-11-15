@@ -11,12 +11,18 @@ import dagger.Provides
 class DomainModule {
 
     @Provides
-    fun provideUsersInteractor(usersRepository: UsersRepository) : UsersInteractor {
+    fun provideMapperDataUsersToDomain() : MapperDataUserToDomain {
+        return MapperDataUserToDomain.Base()
+    }
+
+    @Provides
+    fun provideUsersInteractor(usersRepository: UsersRepository,mapperDataUserToDomain: MapperDataUserToDomain) : UsersInteractor {
         return UsersInteractor.Base(
             usersRepository,
             MapperDataUsersToDomain.Base(
-                MapperDataUserToDomain.Base()
-            )
+                mapperDataUserToDomain
+            ),
+            mapperDataUserToDomain
         )
     }
 }

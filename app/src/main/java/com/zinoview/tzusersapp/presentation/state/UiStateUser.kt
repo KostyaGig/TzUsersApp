@@ -1,17 +1,22 @@
 package com.zinoview.tzusersapp.presentation.state
 
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import com.squareup.picasso.Picasso
+import com.zinoview.tzusersapp.presentation.BundleUser
+import com.zinoview.tzusersapp.presentation.adapter.ModifyItemClickListener
 import com.zinoview.tzusersapp.presentation.adapter.SameUiStateUser
 import com.zinoview.tzusersapp.presentation.core.log
 
-sealed class UiStateUser : SameUiStateUser {
+sealed class UiStateUser : SameUiStateUser, ModifyItem {
 
     open fun bind(avatarImage: ImageView,firstNameText: TextView,lastNameText: TextView,emailText: TextView) = Unit
 
     open fun bind(errorText: TextView) = Unit
+
+    open fun showModifyIcons(edit: ImageView,delete: ImageView) = Unit
 
     abstract fun handleTitleToolbar(actionBar: ActionBar)
 
@@ -26,6 +31,10 @@ sealed class UiStateUser : SameUiStateUser {
 
     override fun sameId(id: Int): Boolean
         = false
+
+    override fun onEditItem(modifyItemClickListener: ModifyItemClickListener) = Unit
+
+    override fun onDeleteItem(modifyItemClickListener: ModifyItemClickListener) = Unit
 
     object Progress : UiStateUser() {
 
@@ -77,22 +86,42 @@ sealed class UiStateUser : SameUiStateUser {
             actionBar.title = TOOLBAR_TITLE
         }
 
+        override fun showModifyIcons(edit: ImageView, delete: ImageView) {
+            edit.visibility = View.GONE
+            delete.visibility = View.GONE
+        }
+
         private companion object {
             private const val TOOLBAR_TITLE = "Users(Remote)"
         }
     }
 
     class Cache(
-        id: Int,
-        email: String,
-        firstName: String,
-        lastName: String,
-        avatar: String
+        private val id: Int,
+        private val email: String,
+        private val firstName: String,
+        private val lastName: String,
+        private val avatar: String
     ) : Base(id, email, firstName, lastName, avatar) {
 
         override fun handleTitleToolbar(actionBar: ActionBar) {
             actionBar.title = TOOLBAR_TITLE
         }
+
+        override fun showModifyIcons(edit: ImageView, delete: ImageView) {
+            edit.visibility = View.VISIBLE
+            delete.visibility = View.VISIBLE
+        }
+
+        override fun onEditItem(modifyItemClickListener: ModifyItemClickListener)
+            = modifyItemClickListener.onEditItem(
+                BundleUser.Base(
+                    id, email, firstName, lastName, avatar
+                )
+            )
+
+        override fun onDeleteItem(modifyItemClickListener: ModifyItemClickListener)
+            = modifyItemClickListener.onDeleteItem(email)
 
         private companion object {
             private const val TOOLBAR_TITLE = "Users(Cache)"

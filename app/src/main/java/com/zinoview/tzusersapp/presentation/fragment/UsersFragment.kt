@@ -7,10 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.zinoview.tzusersapp.R
 import com.zinoview.tzusersapp.databinding.UsersFragmentBinding
+import com.zinoview.tzusersapp.presentation.BundleUser
+import com.zinoview.tzusersapp.presentation.ModifyUser
 import com.zinoview.tzusersapp.presentation.UsersViewModel
 import com.zinoview.tzusersapp.presentation.UsersViewModelFactory
+import com.zinoview.tzusersapp.presentation.adapter.ModifyItemClickListener
 import com.zinoview.tzusersapp.presentation.adapter.UsersAdapter
 import com.zinoview.tzusersapp.presentation.core.BaseFragment
+import com.zinoview.tzusersapp.presentation.core.ExitActivity
 import com.zinoview.tzusersapp.presentation.core.log
 import javax.inject.Inject
 
@@ -24,7 +28,6 @@ class UsersFragment : BaseFragment(R.layout.users_fragment) {
     }
 
     private var _binding: UsersFragmentBinding? = null
-
     private val binding by lazy {
         checkNotNull(_binding)
     }
@@ -45,7 +48,29 @@ class UsersFragment : BaseFragment(R.layout.users_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val adapter = UsersAdapter.Base()
+        val adapter = UsersAdapter.Base(object : ModifyItemClickListener {
+
+            override fun onDeleteItem(email: String) {
+                usersViewModel.modifyUser(ModifyUser.Delete(email))
+            }
+
+            override fun onEditItem(bundleUser: BundleUser) {
+
+                val fragment = UserEditFragment().apply {
+                    arguments = Bundle().apply {
+                        putSerializable(USER_KEY,bundleUser)
+                    }
+                }
+
+                requireActivity()
+                    .supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragment_container,fragment)
+                    .commit()
+
+            }
+
+        })
         binding.usersRecView.adapter = adapter
 
         usersViewModel.observe(this) { uiStateUser ->
@@ -56,5 +81,9 @@ class UsersFragment : BaseFragment(R.layout.users_fragment) {
 
         usersViewModel.users()
 
+    }
+
+    override fun navigateToBack() {
+        (requireActivity() as ExitActivity).exit()
     }
 }

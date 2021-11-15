@@ -8,9 +8,13 @@ interface CacheDataSource<T> : MutableDataSource<List<CloudUser>,T> {
 
     suspend fun isNotEmpty() : Boolean
 
+    suspend fun update(baseUser: BaseUser)
+
+    suspend fun delete(userEmail: String)
+
     class Base(
         private val database: DataBase.Room,
-        private val mapperCloudUserToCache: MapperCloudUserToCache
+        private val mapperToCacheUser: MapperToCacheUser
         ) : CacheDataSource<Flow<List<CacheUser>>> {
 
         override suspend fun users(): Flow<List<CacheUser>> {
@@ -18,12 +22,20 @@ interface CacheDataSource<T> : MutableDataSource<List<CloudUser>,T> {
         }
 
         override suspend fun save(data: List<CloudUser>) {
-            val cacheUsers = data.map { cloudUser -> cloudUser.map(mapperCloudUserToCache) }
+            val cacheUsers = data.map { cloudUser -> cloudUser.map(mapperToCacheUser) }
             database.save(cacheUsers)
         }
 
         override suspend fun isNotEmpty(): Boolean
             = database.usersIsEmpty().not()
+
+        override suspend fun update(baseUser: BaseUser) {
+            database.update(baseUser.map(mapperToCacheUser))
+        }
+
+        override suspend fun delete(userEmail: String) {
+            database.delete(userEmail)
+        }
     }
 
     class Test : CacheDataSource<List<BaseUser>> {
@@ -51,5 +63,11 @@ interface CacheDataSource<T> : MutableDataSource<List<CloudUser>,T> {
         override suspend fun save(data: List<CloudUser>) {
             isNotEmpty = true
         }
+
+        override suspend fun update(baseUser: BaseUser)
+            = Unit
+
+        override suspend fun delete(userEmail: String)
+            = Unit
     }
 }

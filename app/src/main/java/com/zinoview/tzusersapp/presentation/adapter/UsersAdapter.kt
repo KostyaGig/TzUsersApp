@@ -14,7 +14,9 @@ import com.zinoview.tzusersapp.presentation.state.UiStateUser
 interface UsersAdapter : Show<List<UiStateUser>> {
 
 
-    class Base : UsersAdapter, RecyclerView.Adapter<Base.ViewHolder>() {
+    class Base(
+        private val modifyItemClickListener: ModifyItemClickListener
+    ) : UsersAdapter, RecyclerView.Adapter<Base.ViewHolder>() {
 
         private val users = ArrayList<UiStateUser>()
 
@@ -55,7 +57,8 @@ interface UsersAdapter : Show<List<UiStateUser>> {
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    )
+                    ),
+                    modifyItemClickListener
                 )
                 else -> ViewHolder.Failure(
                     FailureItemBinding.inflate(
@@ -83,10 +86,23 @@ interface UsersAdapter : Show<List<UiStateUser>> {
 
             class Progress(view: ProgressItemBinding) : ViewHolder(view.root)
 
-            class Base(private val view: UserItemBinding) : ViewHolder(view.root) {
+            class Base(
+                private val view: UserItemBinding,
+                private val modifyItemClickListener: ModifyItemClickListener
+                ) : ViewHolder(view.root) {
 
-                override fun bind(user: UiStateUser)
-                    = user.bind(view.avatarImage,view.firstNameTv,view.lastNameTv,view.emailTv)
+                override fun bind(user: UiStateUser) {
+                    user.bind(view.avatarImage,view.firstNameTv,view.lastNameTv,view.emailTv)
+                    user.showModifyIcons(view.editUserImage,view.deleteUserImage)
+
+                    view.editUserImage.setOnClickListener {
+                        user.onEditItem(modifyItemClickListener)
+                    }
+
+                    view.deleteUserImage.setOnClickListener {
+                        user.onDeleteItem(modifyItemClickListener)
+                    }
+                }
             }
             class Failure(private val view: FailureItemBinding) : ViewHolder(view.root) {
 

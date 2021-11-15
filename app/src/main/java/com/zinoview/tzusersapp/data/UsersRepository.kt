@@ -5,18 +5,18 @@ import com.zinoview.tzusersapp.data.cache.CacheDataSource
 import com.zinoview.tzusersapp.data.cache.CacheUser
 import com.zinoview.tzusersapp.data.cloud.CloudDataSource
 import com.zinoview.tzusersapp.data.cloud.CloudUser
+import com.zinoview.tzusersapp.presentation.ModifyUser
 import com.zinoview.tzusersapp.presentation.core.log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.lang.Exception
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 interface UsersRepository {
 
     suspend fun users() : Flow<DataUsers>
+
+    suspend fun usersFromCache() : Flow<List<DataUser>>
+
+    suspend fun modifyUser(modifyUserAction: ModifyUser)
 
     class Base(
         private val cloudDataSource: CloudDataSource<CloudUser>,
@@ -26,10 +26,6 @@ interface UsersRepository {
     ) : UsersRepository {
 
         override suspend fun users(): Flow<DataUsers> {
-            if (cacheDataSource.isNotEmpty()) {
-                log("Cache is not empty")
-                return usersFromCache()
-            }
             return try {
                 log("Cache is empty")
                 val cloudUsers = cloudDataSource.users()
@@ -50,18 +46,18 @@ interface UsersRepository {
             }
         }
 
-        private suspend fun usersFromCache() : Flow<DataUsers> = suspendCoroutine { continuation ->
-            CoroutineScope(Dispatchers.IO).launch {
-                cacheDataSource.users().collect { cacheUsers ->
-                    val dataUsers = cacheUsers.map { cacheUser -> cacheUser.map(mapperToDataUser) }
-                    continuation.resume(
-                        flow {
-                            emit(DataUsers.Cache(dataUsers))
-                        }
-                    )
-                }
+        override suspend fun usersFromCache(): Flow<List<DataUser>> {
+            return cacheDataSource.users().map { cacheUsers ->
+                cacheUsers.map { cacheUser ->
+                        cacheUser.map(mapperToDataUser)
+                    }
             }
         }
+
+        override suspend fun modifyUser(modifyUserAction: ModifyUser) {
+            modifyUserAction.execute(cacheDataSource)
+        }
+
     }
 
     class Test(
@@ -100,5 +96,8 @@ interface UsersRepository {
             return result
         }
 
+        override suspend fun usersFromCache(): Flow<List<DataUser>> = flow { }
+
+        override suspend fun modifyUser(modifyUserAction: ModifyUser) = Unit
     }
 }

@@ -17,19 +17,22 @@ interface UsersViewModelFactory : ViewModelProvider.Factory {
         private val defaultCoroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
     ) : UsersViewModelFactory {
 
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T
-            = UsersViewModel.Base(
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            val cacheStateMapper = MapperUiUserToCacheState.Base()
+            return UsersViewModel.Base(
                 usersInteractor,
                 MapperDomainUsersToUi.Base(
                     MapperDomainUserToUi.Base()
                 ),
+                MapperDomainUserToUi.Base(),
                 MapperUiUsersToState.Base(
                     MapperUiUserToCommonState.Base(),
-                    MapperUiUserToCacheState.Base()
+                    cacheStateMapper
                 ),
-                CommunicationUiStateUser.Base(),
-                defaultCoroutineDispatcher
+                cacheStateMapper,
+                CommunicationUiStateUser.Base()
             ) as T
+        }
 
     }
 }

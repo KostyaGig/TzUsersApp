@@ -32,7 +32,7 @@ class CacheModule {
             DataBase.Room.Base(
                 usersDao
             ),
-            MapperCloudUserToCache.Base()
+            MapperToCacheUser.Base()
         )
     }
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/edit_first_name_field"
+        android:layout_width="@dimen/modify_user_field_width"
+        android:layout_height="wrap_content"
+        android:hint="@string/new_user_name_text"
+        android:layout_margin="@dimen/margin_10dp"/>
+
+    <EditText
+        android:id="@+id/edit_last_name_field"
+        android:layout_width="@dimen/modify_user_field_width"
+        android:layout_height="wrap_content"
+        android:hint="@string/new_user_last_name_text"
+        android:layout_margin="@dimen/margin_10dp"/>
+
+    <Button
+        android:id="@+id/update_user_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_10dp"
+        android:layout_marginEnd="@dimen/margin_10dp"
+        android:text="@string/update_text"
+        android:background="@color/purple_200"/>
+</LinearLayout>

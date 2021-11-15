@@ -2,7 +2,6 @@ package com.zinoview.tzusersapp.data.cache
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
 
 interface DataBase<T> {
 
@@ -13,6 +12,10 @@ interface DataBase<T> {
 
         suspend fun save(users: List<CacheUser>)
 
+        suspend fun delete(userEmail: String)
+
+        suspend fun update(cacheUser: CacheUser)
+
         class Base(
             private val usersDao: UsersDao
         ) : Room {
@@ -22,6 +25,12 @@ interface DataBase<T> {
 
             override suspend fun save(users: List<CacheUser>)
                 = usersDao.insert(users as List<CacheUser.Base>)
+
+            override suspend fun delete(userEmail: String)
+                = usersDao.delete(userEmail)
+
+            override suspend fun update(cacheUser: CacheUser)
+                = usersDao.update(cacheUser as CacheUser.Base)
 
             override suspend fun usersIsEmpty(): Boolean
                 = usersDao.emptyProbablyUsers().isEmpty()
