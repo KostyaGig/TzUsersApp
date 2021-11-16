@@ -13,9 +13,9 @@ import com.zinoview.tzusersapp.presentation.state.UiStateUser
 
 interface UsersAdapter : Show<List<UiStateUser>> {
 
-
     class Base(
-        private val modifyItemClickListener: ModifyItemClickListener
+        private val modifyItemClickListener: ModifyItemClickListener,
+        private val onItemClickListener: OnItemClickListener,
     ) : UsersAdapter, RecyclerView.Adapter<Base.ViewHolder>() {
 
         private val users = ArrayList<UiStateUser>()
@@ -58,7 +58,8 @@ interface UsersAdapter : Show<List<UiStateUser>> {
                         parent,
                         false
                     ),
-                    modifyItemClickListener
+                    modifyItemClickListener,
+                    onItemClickListener
                 )
                 else -> ViewHolder.Failure(
                     FailureItemBinding.inflate(
@@ -88,7 +89,8 @@ interface UsersAdapter : Show<List<UiStateUser>> {
 
             class Base(
                 private val view: UserItemBinding,
-                private val modifyItemClickListener: ModifyItemClickListener
+                private val modifyItemClickListener: ModifyItemClickListener,
+                private val onItemClickListener: OnItemClickListener
                 ) : ViewHolder(view.root) {
 
                 override fun bind(user: UiStateUser) {
@@ -101,6 +103,10 @@ interface UsersAdapter : Show<List<UiStateUser>> {
 
                     view.deleteUserImage.setOnClickListener {
                         user.onDeleteItem(modifyItemClickListener)
+                    }
+
+                    view.item.setOnClickListener {
+                        user.onItemClick(onItemClickListener)
                     }
                 }
             }

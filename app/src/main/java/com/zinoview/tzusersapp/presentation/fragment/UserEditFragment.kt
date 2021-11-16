@@ -69,24 +69,22 @@ class UserEditFragment : BaseFragment(R.layout.user_edit_fragment) {
                     usersViewModel.modifyUser(ModifyUser.Edit(
                         modifiedUser
                     ))
-                    navigateToBack()
+                    toBack()
                 } else {
                     Toast.makeText(requireContext(), R.string.fields_not_will_be_empty_text, Toast.LENGTH_SHORT).show()
                 }
             }
 
-            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    navigateToBack()
-                }
-            })
-
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                toBack()
+            }
+        })
     }
 
-    private fun navigateToBack() {
+    private fun toBack() {
         findNavController().navigate(R.id.action_userEditFragment_to_usersFragment)
     }
-
-
 }

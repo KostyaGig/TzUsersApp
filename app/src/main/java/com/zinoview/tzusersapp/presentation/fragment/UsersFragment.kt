@@ -8,11 +8,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.zinoview.tzusersapp.R
 import com.zinoview.tzusersapp.databinding.UsersFragmentBinding
-import com.zinoview.tzusersapp.presentation.BundleUser
-import com.zinoview.tzusersapp.presentation.ModifyUser
-import com.zinoview.tzusersapp.presentation.UsersViewModel
-import com.zinoview.tzusersapp.presentation.UsersViewModelFactory
+import com.zinoview.tzusersapp.presentation.*
 import com.zinoview.tzusersapp.presentation.adapter.ModifyItemClickListener
+import com.zinoview.tzusersapp.presentation.adapter.OnItemClickListener
 import com.zinoview.tzusersapp.presentation.adapter.UsersAdapter
 import com.zinoview.tzusersapp.presentation.core.BaseFragment
 import javax.inject.Inject
@@ -62,6 +60,17 @@ class UsersFragment : BaseFragment(R.layout.users_fragment) {
                     .navigate(R.id.action_usersFragment_to_userEditFragment,bundle)
             }
 
+        }, object : OnItemClickListener {
+
+            override fun onItemClick(clickedUser: ClickedUser) {
+
+                val bundle = Bundle().apply {
+                    putSerializable(USER_KEY,clickedUser)
+                }
+
+                findNavController()
+                    .navigate(R.id.action_usersFragment_to_userDetailFragment,bundle)
+            }
         })
         binding.usersRecView.adapter = adapter
 

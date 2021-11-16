@@ -6,7 +6,9 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import com.squareup.picasso.Picasso
 import com.zinoview.tzusersapp.presentation.BundleUser
+import com.zinoview.tzusersapp.presentation.ClickedUser
 import com.zinoview.tzusersapp.presentation.adapter.ModifyItemClickListener
+import com.zinoview.tzusersapp.presentation.adapter.OnItemClickListener
 import com.zinoview.tzusersapp.presentation.adapter.SameUiStateUser
 import com.zinoview.tzusersapp.presentation.core.log
 
@@ -35,6 +37,8 @@ sealed class UiStateUser : SameUiStateUser, ModifyItem {
     override fun onEditItem(modifyItemClickListener: ModifyItemClickListener) = Unit
 
     override fun onDeleteItem(modifyItemClickListener: ModifyItemClickListener) = Unit
+
+    open fun onItemClick(onItemClickListener: OnItemClickListener) = Unit
 
     object Progress : UiStateUser() {
 
@@ -72,6 +76,13 @@ sealed class UiStateUser : SameUiStateUser, ModifyItem {
             lastNameText.text = lastName
             emailText.text = email
         }
+
+        override fun onItemClick(onItemClickListener: OnItemClickListener)
+            = onItemClickListener.onItemClick(
+                ClickedUser.Base(
+                    id, email, firstName, lastName, avatar
+                )
+            )
     }
 
     class Common(

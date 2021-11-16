@@ -7,6 +7,7 @@ import com.zinoview.tzusersapp.data.cloud.CloudDataSource
 import com.zinoview.tzusersapp.data.cloud.CloudUser
 import com.zinoview.tzusersapp.presentation.ModifyUser
 import com.zinoview.tzusersapp.presentation.core.log
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import java.lang.Exception
 
@@ -26,6 +27,7 @@ interface UsersRepository {
     ) : UsersRepository {
 
         override suspend fun users(): Flow<DataUsers> {
+            delay(DELAY.toLong())
             return try {
                 log("Cache is empty")
                 val cloudUsers = cloudDataSource.users()
@@ -47,6 +49,7 @@ interface UsersRepository {
         }
 
         override suspend fun usersFromCache(): Flow<List<DataUser>> {
+            delay(DELAY.toLong())
             return cacheDataSource.users().map { cacheUsers ->
                 cacheUsers.map { cacheUser ->
                         cacheUser.map(mapperToDataUser)
@@ -56,6 +59,10 @@ interface UsersRepository {
 
         override suspend fun modifyUser(modifyUserAction: ModifyUser) {
             modifyUserAction.execute(cacheDataSource)
+        }
+
+        private companion object {
+            private const val DELAY = 2000
         }
 
     }
